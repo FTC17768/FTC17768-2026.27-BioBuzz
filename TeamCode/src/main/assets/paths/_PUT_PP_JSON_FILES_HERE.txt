@@ -1,0 +1,7 @@
+Save Pedro Visualizer project files (.pp.json) in this folder.
+
+The file name must match the name used in the auto code. For example, FirstAuto.pp.json is loaded with:
+
+    PathFile.load(hardwareMap, "FirstAuto")
+
+After saving, deploy to the robot to use the new path.

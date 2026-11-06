@@ -1,16 +1,14 @@
 package org.firstinspires.ftc.teamcode.auto;
 
-import static com.pedropathing.api.Paths.curve;
-import static com.pedropathing.api.Paths.line;
-
-import com.pedropathing.api.PoseFactory;
 import com.pedropathing.follower.Follower;
-import com.pedropathing.math.Pose;
 import com.pedropathing.paths.Path;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.pedro.Constants;
+import org.firstinspires.ftc.teamcode.pedro.PathFile;
+import org.firstinspires.ftc.teamcode.subsystems.MechanismSubsystem;
 
 /**
  * Template for a Pedro autonomous. To make a new one, copy this file, change the class name and the
@@ -20,50 +18,76 @@ import org.firstinspires.ftc.teamcode.pedro.Constants;
 @Autonomous(name = "First Auto", group = "COMP")
 public class FirstAuto extends LinearOpMode {
 
-    private final PoseFactory poses = PoseFactory.degrees();
-
-    // STEP 1: poses from the visualizer, as (x inches, y inches, heading degrees).
-    // startPose must match where the robot is really placed on the field.
-    private final Pose startPose = poses.of(78.7053, 8, 90);
-    private final Pose path1 = poses.of(80.6655, 26.3625, 180);
-
-    // STEP 2: one path per move, in the order the robot should drive them.
-    //   Straight line:  line(a, b).linear(a, b)
-    //   Curve:          curve(a, controlPoint, b).linear(a, b)
-    private Path[] buildPaths() {
-        return new Path[] {
-                line(startPose, path1).linear(startPose, path1),
-        };
-    }
+    private Follower follower;
+    private MechanismSubsystem mechanisms;
 
     @Override
     public void runOpMode() {
-        Follower follower = Constants.create(hardwareMap);
-        follower.setPose(startPose);
+        follower = Constants.create(hardwareMap);
+        mechanisms = new MechanismSubsystem(hardwareMap);
+
+        // STEP 1: the file saved from the visualizer, in TeamCode/src/main/assets/paths/.
+        // Place the robot at the start point drawn in that file.
+        PathFile paths = PathFile.load(hardwareMap, "FirstAuto");
+        follower.setPose(paths.startPose());
         follower.update();
 
-        Path[] paths = buildPaths();
+        // STEP 2: get each path by its name in the visualizer.
+        Path firstPath = paths.get("Path 1");
 
         telemetry.addData("Auto", "Ready");
         telemetry.update();
 
         waitForStart();
 
-        for (int i = 0; i < paths.length && opModeIsActive(); i++) {
-            follower.follow(paths[i]);
+        // STEP 3: the order of actions. Other things you can add here:
+        //   mechanisms.setShooterOn(true);                     spin up, keeps running while driving
+        //   shoot(2.0);                                        feed for 2 seconds while READY
+        //   mechanisms.intakeIn();  /  mechanisms.intakeStop();
+        //   driveThen(firstPath, 0.5, mechanisms::intakeIn);   do something partway along a path
+        drive(firstPath);
 
-            while (opModeIsActive() && !follower.atParametricEnd()) {
-                follower.update();
-                telemetry.addData("Path", "%d of %d", i + 1, paths.length);
-                telemetry.addData("X", "%.1f in", follower.pose().x());
-                telemetry.addData("Y", "%.1f in", follower.pose().y());
-                telemetry.addData("Heading", "%.1f deg", Math.toDegrees(follower.pose().heading()));
-                telemetry.update();
+        mechanisms.setShooterOn(false);
+        mechanisms.intakeStop();
+        follower.stop();
+    }
+
+    /** Drives a path and waits until it's done. */
+    private void drive(Path path) {
+        driveThen(path, 2.0, () -> { }); // 2.0 is past the end of a path, so the action never runs
+    }
+
+    /** Drives a path, running the action once when the path reaches atFraction (0 is the start, 1 the end). */
+    private void driveThen(Path path, double atFraction, Runnable action) {
+        boolean done = false;
+        follower.follow(path);
+
+        while (opModeIsActive() && !follower.atParametricEnd()) {
+            follower.update();
+
+            double completion = follower.parametricCompletion();
+            if (!done && completion >= atFraction) {
+                action.run();
+                done = true;
             }
 
-            // STEP 3: anything the robot should do after path i goes here, like shooting.
+            telemetry.addData("Path done", "%.2f", completion);
+            telemetry.addData("X", "%.1f in", follower.pose().x());
+            telemetry.addData("Y", "%.1f in", follower.pose().y());
+            telemetry.addData("Heading", "%.1f deg", Math.toDegrees(follower.pose().heading()));
+            telemetry.update();
+        }
+    }
+
+    /** Holds position and feeds for this many seconds. The flapper only runs while the shooter is READY. */
+    private void shoot(double seconds) {
+        ElapsedTime timer = new ElapsedTime();
+
+        while (opModeIsActive() && timer.seconds() < seconds) {
+            follower.update();
+            mechanisms.setFlapperOn(true);
         }
 
-        follower.stop();
+        mechanisms.setFlapperOn(false);
     }
 }
