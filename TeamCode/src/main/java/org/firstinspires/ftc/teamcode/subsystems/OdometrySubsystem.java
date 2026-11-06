@@ -15,7 +15,7 @@ public class OdometrySubsystem {
 
     // TODO: measure once the odometry pods are physically mounted and update these.
     // Left of center is positive X offset, forward of center is positive Y offset.
-    private static final double X_POD_OFFSET_MM = 90;
+    private static final double X_POD_OFFSET_MM = -90;
     private static final double Y_POD_OFFSET_MM = -110;
 
     // TODO: confirm pod hardware and encoder wiring direction on the robot
