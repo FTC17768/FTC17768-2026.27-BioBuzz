@@ -16,9 +16,9 @@ public class MechanismSubsystem {
     private static final String FLAPPER_SERVO_NAME = "flapper";
 
     // Low starting powers for first testing. Raise them once each direction is confirmed.
-    private static final double INTAKE_POWER = 0.5;
+    private static final double INTAKE_POWER = 0.8;
     private static final double SHOOTER_POWER = 0.5;
-    private static final double FLAPPER_POWER = 0.5;
+    private static final double FLAPPER_POWER = 0.75;
 
     // Time-based estimate, since this doesn't read the shooter's real speed. Tune it on the robot.
     private static final double SHOOTER_SPIN_UP_SECONDS = 1.5;
