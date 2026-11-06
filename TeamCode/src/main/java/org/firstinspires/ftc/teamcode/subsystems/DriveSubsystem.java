@@ -18,7 +18,6 @@ public class DriveSubsystem {
 
         // Direction configuration
         rbd.setDirection(DcMotor.Direction.REVERSE);
-        rfd.setDirection(DcMotor.Direction.REVERSE);
         
         // Optional: Set zero power behavior
         rfd.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -36,9 +35,9 @@ public class DriveSubsystem {
      */
     public void drive(double forward, double strafe, double steer, double speedMultiplier) {
         double rfdPower = speedMultiplier * (forward + (steer + strafe));
-        double lfdPower = speedMultiplier * (forward - (steer - strafe));
+        double lfdPower = speedMultiplier * (forward - (steer + strafe));
         double rbdPower = speedMultiplier * (forward + (steer - strafe));
-        double lbdPower = speedMultiplier * (forward - (steer + strafe));
+        double lbdPower = speedMultiplier * (forward - (steer - strafe));
 
         rfd.setPower(rfdPower);
         lfd.setPower(lfdPower);

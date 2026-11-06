@@ -15,8 +15,8 @@ public class OdometrySubsystem {
 
     // TODO: measure once the odometry pods are physically mounted and update these.
     // Left of center is positive X offset, forward of center is positive Y offset.
-    private static final double X_POD_OFFSET_MM = 0.0;
-    private static final double Y_POD_OFFSET_MM = 0.0;
+    private static final double X_POD_OFFSET_MM = 90;
+    private static final double Y_POD_OFFSET_MM = -110;
 
     // TODO: confirm pod hardware and encoder wiring direction on the robot
     private static final GoBildaPinpointDriver.GoBildaOdometryPods POD_TYPE =
@@ -24,7 +24,7 @@ public class OdometrySubsystem {
     private static final GoBildaPinpointDriver.EncoderDirection X_ENCODER_DIRECTION =
             GoBildaPinpointDriver.EncoderDirection.FORWARD;
     private static final GoBildaPinpointDriver.EncoderDirection Y_ENCODER_DIRECTION =
-            GoBildaPinpointDriver.EncoderDirection.FORWARD;
+            GoBildaPinpointDriver.EncoderDirection.REVERSED;
 
     private final GoBildaPinpointDriver pinpoint;
 

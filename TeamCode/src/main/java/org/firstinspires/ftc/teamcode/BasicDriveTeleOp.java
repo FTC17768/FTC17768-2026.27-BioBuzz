@@ -37,10 +37,10 @@ public class BasicDriveTeleOp extends LinearOpMode {
         // Start Limelight polling
         vision.start();
 
-        double speed = 0.6;
-        double speed_slow = 0.4;
-        double speed_normal = 0.6;
-        double speed_fast = 0.8;
+        double speed = 0.5;
+        double speed_slow = 0.25;
+        double speed_normal = 0.5;
+        double speed_fast = 1.0;
 
         boolean lastResetButtonState = false;
         boolean lastRecalibrateButtonState = false;
@@ -69,11 +69,11 @@ public class BasicDriveTeleOp extends LinearOpMode {
             Pose2D pose = odometry.getPosition();
 
             // Controller speed toggles
-            if (gamepad1.x) {
+            if (gamepad1.b) {
                 speed = speed_slow;
-            } else if (gamepad1.a) {
+            } else if (gamepad1.x) {
                 speed = speed_normal;
-            } else if (gamepad1.b) {
+            } else if (gamepad1.a) {
                 speed = speed_fast;
             }
 
@@ -101,6 +101,10 @@ public class BasicDriveTeleOp extends LinearOpMode {
             telemetry.addData("Odometry Pose", "X: %.1fmm, Y: %.1fmm, H: %.1f°",
                     pose.getX(DistanceUnit.MM),
                     pose.getY(DistanceUnit.MM),
+                    odometry.getHeadingDegrees());
+            telemetry.addData("Odometry Pose (in)", "X: %.2fin, Y: %.2fin",
+                    pose.getX(DistanceUnit.INCH),
+                    pose.getY(DistanceUnit.INCH),
                     odometry.getHeadingDegrees());
             telemetry.addData("Odometry Velocity", "X: %.1fmm/s, Y: %.1fmm/s, Turn: %.1f°/s",
                     odometry.getVelXMmPerSec(),
