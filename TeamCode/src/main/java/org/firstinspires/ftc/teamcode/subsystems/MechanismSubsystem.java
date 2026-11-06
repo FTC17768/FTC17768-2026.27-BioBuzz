@@ -44,6 +44,7 @@ public class MechanismSubsystem {
 
         // Let the shooter spin down on its own instead of braking hard.
         shooterMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        shooterMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     public void intakeIn() {
@@ -59,6 +60,7 @@ public class MechanismSubsystem {
     }
 
     public void setShooterOn(boolean on) {
+        shooterOn = on;
         if (on) {
             shooterMotor.setVelocity(SHOOTER_TARGET_VELOCITY);
         } else {
@@ -71,7 +73,7 @@ public class MechanismSubsystem {
         return shooterMotor.getVelocity();
     }
 
-    /** True once the shooter has been on for SHOOTER_SPIN_UP_SECONDS. */
+    /** True once the shooter has reached SHOOTER_TARGET_VELOCITY. */
     public boolean isShooterReady() {
         return shooterOn && Math.abs(getShooterVelocity() - SHOOTER_TARGET_VELOCITY) <= SHOOTER_VELOCITY_TOLERANCE;
     }
