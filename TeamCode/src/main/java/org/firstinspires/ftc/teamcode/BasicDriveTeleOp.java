@@ -2,13 +2,12 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.hardware.limelightvision.LLResult;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.MechanismSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.OdometrySubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.VisionSubsystem;
 
 @SuppressWarnings("unused") // discovered via reflection by the FTC Driver Station, not referenced directly
 @TeleOp(name="Basic Drive TeleOp", group="COMP")
@@ -21,8 +20,8 @@ public class BasicDriveTeleOp extends LinearOpMode {
 
         // Instantiate subsystems
         DriveSubsystem drive = new DriveSubsystem(hardwareMap);
-        VisionSubsystem vision = new VisionSubsystem(hardwareMap);
         OdometrySubsystem odometry = new OdometrySubsystem(hardwareMap);
+        MechanismSubsystem mechanisms = new MechanismSubsystem(hardwareMap);
 
         // One-time sanity check that we're talking to the right sensor with the offsets we expect.
         telemetry.addData("Pinpoint Device", "ID: %d, Firmware: %d", odometry.getDeviceId(), odometry.getDeviceVersion());
@@ -33,9 +32,6 @@ public class BasicDriveTeleOp extends LinearOpMode {
         telemetry.update();
 
         waitForStart();
-        
-        // Start Limelight polling
-        vision.start();
 
         double speed = 0.5;
         double speed_slow = 0.25;
@@ -44,10 +40,10 @@ public class BasicDriveTeleOp extends LinearOpMode {
 
         boolean lastResetButtonState = false;
         boolean lastRecalibrateButtonState = false;
+        boolean shooterOn = false;
+        boolean lastShooterButtonState = false;
 
         while (opModeIsActive()) {
-            // Read Limelight
-            LLResult llResult = vision.getLatestResult();
 
             // Re-zero odometry on a fresh press of "back". Robot should be stationary when pressed.
             boolean resetButtonState = gamepad1.back;
@@ -85,16 +81,30 @@ public class BasicDriveTeleOp extends LinearOpMode {
             // Command the Drive Subsystem
             drive.drive(forward, strafe, steer, speed);
 
+            // Intake: hold right bumper to run in, left bumper to reverse
+            if (gamepad2.right_bumper) {
+                mechanisms.intakeIn();
+            } else if (gamepad2.left_bumper) {
+                mechanisms.intakeOut();
+            } else {
+                mechanisms.intakeStop();
+            }
+
+            // Shooter: a fresh press of the right trigger toggles it on or off
+            boolean shooterButtonState = gamepad2.right_trigger > 0.5;
+            if (shooterButtonState && !lastShooterButtonState) {
+                shooterOn = !shooterOn;
+            }
+            lastShooterButtonState = shooterButtonState;
+            mechanisms.setShooterOn(shooterOn);
+
+            // Flapper: feeds the shooter while the left trigger is held, once the shooter is ready
+            mechanisms.setFlapperOn(gamepad2.left_trigger > 0.5);
+
             // Telemetry feedback
+            telemetry.addData("Shooter", !shooterOn ? "OFF" : (mechanisms.isShooterReady() ? "READY" : "SPINNING UP"));
             telemetry.addData("Speed Mode", speed == speed_slow ? "SLOW" : (speed == speed_fast ? "FAST" : "NORMAL"));
             telemetry.addData("Drive", "Forward: %.2f, Strafe: %.2f, Steer: %.2f", forward, strafe, steer);
-            
-            // Basic Limelight telemetry
-            if (llResult != null && llResult.isValid()) {
-                telemetry.addData("Limelight", "Target Visible! tx: %.2f, ty: %.2f", llResult.getTx(), llResult.getTy());
-            } else {
-                telemetry.addData("Limelight", "No Target");
-            }
 
             // Odometry telemetry
             telemetry.addData("Odometry Status", odometry.getStatus());
@@ -120,8 +130,5 @@ public class BasicDriveTeleOp extends LinearOpMode {
 
             telemetry.update();
         }
-        
-        // Clean up
-        vision.stop();
     }
 }

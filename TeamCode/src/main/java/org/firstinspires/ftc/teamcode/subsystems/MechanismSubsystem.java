@@ -1,0 +1,88 @@
+package org.firstinspires.ftc.teamcode.subsystems;
+
+import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+public class MechanismSubsystem {
+
+    // These must match the names in the robot's hardware configuration exactly.
+    private static final String INTAKE_MOTOR_NAME = "INTAKE";
+    private static final String SHOOTER_MOTOR_NAME = "SHOOTER";
+    private static final String INTAKE_LEFT_SERVO_NAME = "intake-left";
+    private static final String INTAKE_RIGHT_SERVO_NAME = "intake-right";
+    private static final String FLAPPER_SERVO_NAME = "flapper";
+
+    // Low starting powers for first testing. Raise them once each direction is confirmed.
+    private static final double INTAKE_POWER = 0.5;
+    private static final double SHOOTER_POWER = 0.5;
+    private static final double FLAPPER_POWER = 0.5;
+
+    // Time-based estimate, since this doesn't read the shooter's real speed. Tune it on the robot.
+    private static final double SHOOTER_SPIN_UP_SECONDS = 1.5;
+
+    private final ElapsedTime shooterTimer = new ElapsedTime();
+    private boolean shooterOn = false;
+
+    private final DcMotor intakeMotor;
+    private final DcMotor shooterMotor;
+    private final CRServo intakeLeft;
+    private final CRServo intakeRight;
+    private final CRServo flapper;
+
+    public MechanismSubsystem(HardwareMap hardwareMap) {
+        intakeMotor = hardwareMap.get(DcMotor.class, INTAKE_MOTOR_NAME);
+        shooterMotor = hardwareMap.get(DcMotor.class, SHOOTER_MOTOR_NAME);
+        intakeLeft = hardwareMap.get(CRServo.class, INTAKE_LEFT_SERVO_NAME);
+        intakeRight = hardwareMap.get(CRServo.class, INTAKE_RIGHT_SERVO_NAME);
+        flapper = hardwareMap.get(CRServo.class, FLAPPER_SERVO_NAME);
+
+        // Directions confirmed with the Port Test OpMode.
+        intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        shooterMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        intakeLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        intakeRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        flapper.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        // Let the shooter spin down on its own instead of braking hard.
+        shooterMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+    }
+
+    public void intakeIn() {
+        setIntake(INTAKE_POWER);
+    }
+
+    public void intakeOut() {
+        setIntake(-INTAKE_POWER);
+    }
+
+    public void intakeStop() {
+        setIntake(0);
+    }
+
+    public void setShooterOn(boolean on) {
+        if (on && !shooterOn) {
+            shooterTimer.reset();
+        }
+        shooterOn = on;
+        shooterMotor.setPower(on ? SHOOTER_POWER : 0);
+    }
+
+    /** True once the shooter has been on for SHOOTER_SPIN_UP_SECONDS. */
+    public boolean isShooterReady() {
+        return shooterOn && shooterTimer.seconds() >= SHOOTER_SPIN_UP_SECONDS;
+    }
+
+    /** The flapper feeds the shooter, so it only runs when the shooter is ready. */
+    public void setFlapperOn(boolean on) {
+        flapper.setPower(on && isShooterReady() ? FLAPPER_POWER : 0);
+    }
+
+    private void setIntake(double power) {
+        intakeMotor.setPower(power);
+        intakeLeft.setPower(power);
+        intakeRight.setPower(power);
+    }
+}
