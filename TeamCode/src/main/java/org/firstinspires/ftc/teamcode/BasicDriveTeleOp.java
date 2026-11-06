@@ -103,6 +103,7 @@ public class BasicDriveTeleOp extends LinearOpMode {
 
             // Telemetry feedback
             telemetry.addData("Shooter", !shooterOn ? "OFF" : (mechanisms.isShooterReady() ? "READY" : "SPINNING UP"));
+            telemetry.addData("Shooter Speed", "%.0f ticks/s", mechanisms.getShooterVelocity());
             telemetry.addData("Speed Mode", speed == speed_slow ? "SLOW" : (speed == speed_fast ? "FAST" : "NORMAL"));
             telemetry.addData("Drive", "Forward: %.2f, Strafe: %.2f, Steer: %.2f", forward, strafe, steer);
 
