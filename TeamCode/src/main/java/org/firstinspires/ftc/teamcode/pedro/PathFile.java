@@ -69,11 +69,11 @@ public final class PathFile {
             JSONObject start = project.getJSONObject("startPoint");
             double x = start.getDouble("x");
             double y = start.getDouble("y");
-            Pose startPose = poses.of(x, y, start.getDouble("headingDeg"));
+            JSONArray lines = project.getJSONArray("lines");
+            Pose startPose = poses.of(x, y, startHeadingDeg(start, lines));
 
             // Each path starts where the one before it ended.
             Map<String, Path> paths = new LinkedHashMap<>();
-            JSONArray lines = project.getJSONArray("lines");
             for (int i = 0; i < lines.length(); i++) {
                 JSONObject path = lines.getJSONObject(i);
                 String name = path.optString("name", "");
@@ -95,6 +95,25 @@ public final class PathFile {
         } catch (JSONException e) {
             throw new IllegalArgumentException(fileName + " isn't a valid visualizer file: " + e.getMessage(), e);
         }
+    }
+
+    /**
+     * The heading the robot is placed at. The visualizer edits the start heading on the first path and
+     * can leave startPoint.headingDeg stale, and a wrong value here makes the robot spin at the start of
+     * the path and then drive with the whole field turned around.
+     */
+    private static double startHeadingDeg(JSONObject start, JSONArray lines) throws JSONException {
+        if (lines.length() > 0) {
+            JSONObject heading = lines.getJSONObject(0).getJSONObject("heading");
+            String type = heading.getString("type");
+            if ("linear".equals(type)) {
+                return heading.getDouble("startDeg");
+            }
+            if ("constant".equals(type)) {
+                return heading.getDouble("degrees");
+            }
+        }
+        return start.getDouble("headingDeg");
     }
 
     private static Path buildPath(String fileName, String name, JSONObject path, PoseFactory poses,

@@ -82,16 +82,16 @@ public class BasicDriveTeleOp extends LinearOpMode {
             drive.drive(forward, strafe, steer, speed);
 
             // Intake: hold right bumper to run in, left bumper to reverse
-            if (gamepad2.right_bumper) {
+            if (gamepad1.right_trigger > 0.5) {
                 mechanisms.intakeIn();
-            } else if (gamepad2.left_bumper) {
+            } else if (gamepad1.left_trigger > 0.5) {
                 mechanisms.intakeOut();
             } else {
                 mechanisms.intakeStop();
             }
 
             // Shooter: a fresh press of the right trigger toggles it on or off
-            boolean shooterButtonState = gamepad2.right_trigger > 0.5;
+            boolean shooterButtonState = gamepad2.left_trigger > 0.8;
             if (shooterButtonState && !lastShooterButtonState) {
                 shooterOn = !shooterOn;
             }
@@ -99,7 +99,7 @@ public class BasicDriveTeleOp extends LinearOpMode {
             mechanisms.setShooterOn(shooterOn);
 
             // Flapper: feeds the shooter while the left trigger is held, once the shooter is ready
-            mechanisms.setFlapperOn(gamepad2.left_trigger > 0.5);
+            mechanisms.setFlapperOn(gamepad2.right_trigger > 0.8);
 
             // Telemetry feedback
             telemetry.addData("Shooter", !shooterOn ? "OFF" : (mechanisms.isShooterReady() ? "READY" : "SPINNING UP"));

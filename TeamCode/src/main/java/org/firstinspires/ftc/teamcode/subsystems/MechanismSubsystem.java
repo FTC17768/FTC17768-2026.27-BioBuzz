@@ -17,9 +17,9 @@ public class MechanismSubsystem {
 
     // Low starting powers for first testing. Raise them once each direction is confirmed.
     private static final double INTAKE_POWER = 0.8;
-    private static final double SHOOTER_TARGET_VELOCITY = 1320;
+    private static final double SHOOTER_TARGET_VELOCITY = 1220;
     private static final double SHOOTER_VELOCITY_TOLERANCE = 50;
-    private static final double FLAPPER_POWER = 0.75;
+    private static final double FLAPPER_POWER = 0.4;
     private boolean shooterOn = false;
 
     private final DcMotor intakeMotor;

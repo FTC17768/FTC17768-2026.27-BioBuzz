@@ -15,8 +15,8 @@ import org.firstinspires.ftc.teamcode.subsystems.MechanismSubsystem;
  * name in @Autonomous, then edit steps 1-3 below.
  */
 @SuppressWarnings("unused") // discovered via reflection by the FTC Driver Station, not referenced directly
-@Autonomous(name = "First Auto", group = "COMP")
-public class FirstAuto extends LinearOpMode {
+@Autonomous(name = "Red Shoot and Park", group = "COMP")
+public class RedShootPark extends LinearOpMode {
 
     private Follower follower;
     private MechanismSubsystem mechanisms;
@@ -28,12 +28,12 @@ public class FirstAuto extends LinearOpMode {
 
         // STEP 1: the file saved from the visualizer, in TeamCode/src/main/assets/paths/.
         // Place the robot at the start point drawn in that file.
-        PathFile paths = PathFile.load(hardwareMap, "FirstAuto");
+        PathFile paths = PathFile.load(hardwareMap, "ParkRed");
         follower.setPose(paths.startPose());
         follower.update();
 
         // STEP 2: get each path by its name in the visualizer.
-        Path firstPath = paths.get("Path 1");
+        Path RedPark = paths.get("Park");
 
         telemetry.addData("Auto", "Ready");
         telemetry.update();
@@ -41,13 +41,12 @@ public class FirstAuto extends LinearOpMode {
         waitForStart();
 
         // STEP 3: the order of actions. Other things you can add here:
-        //   mechanisms.setShooterOn(true);                     spin up, keeps running while driving
-        //   shoot(2.0);                                        feed for 2 seconds while READY
+             mechanisms.setShooterOn(true);                     //spin up, keeps running while driving
+             shoot(10.0);                                        //feed for 2 seconds while READY
         //   mechanisms.intakeIn();  /  mechanisms.intakeStop();
         //   driveThen(firstPath, 0.5, mechanisms::intakeIn);   do something partway along a path
-        drive(firstPath);
-
         mechanisms.setShooterOn(false);
+        drive(RedPark);
         mechanisms.intakeStop();
         follower.stop();
     }
