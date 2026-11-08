@@ -1,0 +1,235 @@
+{
+  "version": "2.0.0",
+  "timestamp": "2026-11-07T18:48:25.914Z",
+  "startPoint": {
+    "x": 83.01197144590161,
+    "y": 7.545178106992862,
+    "locked": false,
+    "headingDeg": 90
+  },
+  "lines": [
+    {
+      "id": "line-mw5c3hyh-ml46qz",
+      "color": "#ffc516",
+      "name": "Park",
+      "locked": false,
+      "waitBeforeMs": 0,
+      "waitAfterMs": 0,
+      "waitBeforeName": "",
+      "waitAfterName": "",
+      "kind": "atomic",
+      "endPoint": {
+        "x": 130.78891490061977,
+        "y": 22.267318336700875
+      },
+      "controlPoints": [
+        {
+          "x": 70.90149892933619,
+          "y": 46.96466809421841
+        }
+      ],
+      "heading": {
+        "type": "linear",
+        "startDeg": -90,
+        "endDeg": -90,
+        "degrees": 0,
+        "reverse": false,
+        "piecewiseHeading": {
+          "segments": [
+            {
+              "startProgress": 0,
+              "endProgress": 1,
+              "interpolationType": "linear",
+              "reversed": false,
+              "parameters": {
+                "startDeg": 0,
+                "endDeg": 0
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "shapes": [
+    {
+      "id": "biobuzz-red-hive",
+      "name": "Red HIVE",
+      "vertices": [
+        {
+          "x": 95.5,
+          "y": 50
+        },
+        {
+          "x": 92.9,
+          "y": 50
+        },
+        {
+          "x": 92.9,
+          "y": 91.4
+        },
+        {
+          "x": 95.5,
+          "y": 91.4
+        }
+      ],
+      "color": "#dc2626",
+      "fillColor": "#ff6b6b"
+    },
+    {
+      "id": "biobuzz-blue-hive",
+      "name": "Blue HIVE",
+      "vertices": [
+        {
+          "x": 45,
+          "y": 91.4
+        },
+        {
+          "x": 47.599999999999994,
+          "y": 91.4
+        },
+        {
+          "x": 47.599999999999994,
+          "y": 50
+        },
+        {
+          "x": 45,
+          "y": 50
+        }
+      ],
+      "color": "#2563eb",
+      "fillColor": "#60a5fa"
+    },
+    {
+      "id": "biobuzz-flower-top",
+      "name": "Scoring-Side FLOWER",
+      "vertices": [
+        {
+          "x": 98.1,
+          "y": 141.5
+        },
+        {
+          "x": 91.4,
+          "y": 141.5
+        },
+        {
+          "x": 91.4,
+          "y": 139.4
+        },
+        {
+          "x": 94.75,
+          "y": 137.7
+        },
+        {
+          "x": 98.1,
+          "y": 139.4
+        }
+      ],
+      "color": "#dc2626",
+      "fillColor": "#ff6b6b"
+    },
+    {
+      "id": "biobuzz-flower-right",
+      "name": "Blue Alliance FLOWER",
+      "vertices": [
+        {
+          "x": 0,
+          "y": 98.1
+        },
+        {
+          "x": 2.0999999999999943,
+          "y": 98.1
+        },
+        {
+          "x": 3.8000000000000114,
+          "y": 94.75
+        },
+        {
+          "x": 2.0999999999999943,
+          "y": 91.4
+        },
+        {
+          "x": 0,
+          "y": 91.4
+        }
+      ],
+      "color": "#2563eb",
+      "fillColor": "#60a5fa"
+    },
+    {
+      "id": "biobuzz-flower-bottom",
+      "name": "Audience-Side FLOWER",
+      "vertices": [
+        {
+          "x": 50.349999999999994,
+          "y": 0
+        },
+        {
+          "x": 43.7,
+          "y": 0
+        },
+        {
+          "x": 43.7,
+          "y": 2.1
+        },
+        {
+          "x": 47,
+          "y": 3.8
+        },
+        {
+          "x": 50.349999999999994,
+          "y": 2.1
+        }
+      ],
+      "color": "#2563eb",
+      "fillColor": "#60a5fa"
+    },
+    {
+      "id": "biobuzz-flower-left",
+      "name": "Red Alliance FLOWER",
+      "vertices": [
+        {
+          "x": 141.5,
+          "y": 50.35
+        },
+        {
+          "x": 139.4,
+          "y": 50.35
+        },
+        {
+          "x": 137.7,
+          "y": 47
+        },
+        {
+          "x": 139.4,
+          "y": 43.65
+        },
+        {
+          "x": 141.5,
+          "y": 43.65
+        }
+      ],
+      "color": "#dc2626",
+      "fillColor": "#ff6b6b"
+    }
+  ],
+  "sequence": [
+    {
+      "kind": "path",
+      "lineId": "line-mw5c3hyh-ml46qz"
+    }
+  ],
+  "fieldPoints": [],
+  "robot": {
+    "forwardVelocity": 75,
+    "strafeVelocity": 65,
+    "aVelocity": 3.141592653589793,
+    "kFriction": 0.1,
+    "rLength": 16,
+    "rWidth": 16,
+    "safetyMargin": 1,
+    "maxAcceleration": 50,
+    "maxDeceleration": 50
+  },
+  "activePaths": []
+}

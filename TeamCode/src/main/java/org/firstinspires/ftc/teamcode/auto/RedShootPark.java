@@ -33,12 +33,18 @@ public class RedShootPark extends LinearOpMode {
         follower.update();
 
         // STEP 2: get each path by its name in the visualizer.
-        Path RedPark = paths.get("Park");
+        Path Park = paths.get("Park");
 
         telemetry.addData("Auto", "Ready");
         telemetry.update();
 
-        waitForStart();
+        while (!isStarted() && !isStopRequested()) {
+            follower.update();
+            telemetry.addData("Pose X", "%.1f", follower.pose().x());
+            telemetry.addData("Pose Y", "%.1f", follower.pose().y());
+            telemetry.addData("Heading", "%.1f deg", Math.toDegrees(follower.pose().heading()));
+            telemetry.update();
+        }
 
         // STEP 3: the order of actions. Other things you can add here:
              mechanisms.setShooterOn(true);                     //spin up, keeps running while driving
@@ -46,7 +52,7 @@ public class RedShootPark extends LinearOpMode {
         //   mechanisms.intakeIn();  /  mechanisms.intakeStop();
         //   driveThen(firstPath, 0.5, mechanisms::intakeIn);   do something partway along a path
         mechanisms.setShooterOn(false);
-        drive(RedPark);
+        drive(Park);
         mechanisms.intakeStop();
         follower.stop();
     }
